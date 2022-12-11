@@ -29,6 +29,12 @@ WORKDIR /app
 # Setup PNPM
 RUN npm --silent install --global --depth 0 pnpm
 
+# Set environment variables
+ARG DATABASE_URL
+ENV DATABASE_URL $DATABASE_URL
+ARG BASE_DOMAIN
+ENV BASE_DOMAIN $BASE_DOMAIN
+
 COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
