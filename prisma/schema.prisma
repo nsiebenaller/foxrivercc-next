@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Family {
+  id        Int            @id @default(autoincrement())
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  lastName  String
+  homePhone String?
+  members   FamilyMember[]
+  contact   Contact?       @relation(fields: [contactId], references: [id])
+  contactId Int?
+}
+
+model FamilyMember {
+  id             Int            @id @default(autoincrement())
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  firstName      String
+  lastName       String?
+  birthDate      DateTime?
+  yearJoined     Int?
+  mobilePhone    String?
+  email          String?
+  deceased       Boolean        @default(false)
+  membershipType MembershipType
+  contact        Contact?       @relation(fields: [contactId], references: [id])
+  contactId      Int?
+  Family         Family         @relation(fields: [familyId], references: [id])
+  familyId       Int
+}
+
+enum MembershipType {
+  MEMBER
+  FOUNDING_MEMBER
+  FRIEND
+  YOUTH
+}
+
+model Contact {
+  id           Int            @id @default(autoincrement())
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  address      String
+  city         String
+  state        String
+  zipcode      Int
+  FamilyMember FamilyMember[]
+  Family       Family[]
+}
